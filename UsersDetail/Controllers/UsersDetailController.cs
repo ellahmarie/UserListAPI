@@ -16,6 +16,7 @@ namespace UsersDetailAPI.Controllers
     {
         private readonly IUsersDetailsRepository _repository;
         private readonly IEmailRepository _email;
+        private const string EMAIL_BODY = "Hello! Your registration is successful.", EMAIL_SUBJECT = "REGISTRATION SUCCESSFUL";
 
         public UsersDetailController(IUsersDetailsRepository repository, IEmailRepository email)
         {
@@ -47,7 +48,7 @@ namespace UsersDetailAPI.Controllers
         {
             _repository.AddUser(user);
 
-            _email.SendEmail(user.Email, "REGISTRATION SUCCESSFUL", "Hello! Your registration is successful.");
+            _email.SendEmail(user.Email, EMAIL_SUBJECT, EMAIL_BODY );
 
             return Ok();
         }
@@ -88,21 +89,6 @@ namespace UsersDetailAPI.Controllers
             if (user == null) return Ok(new UsersDetail { Email = null, Firstname = null, Id = -1, Lastname = null, Password = null });
 
             return Ok(_repository.Login(login));
-        }
-
-        [HttpPost("email")]
-        public async Task<IActionResult> SendEmail()
-        {
-            try
-            {
-                await _email.SendEmail("testergirl32@gmail.com", "TEST SUBJECT", "TEST BODY");
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
-            
         }
     }
 }
